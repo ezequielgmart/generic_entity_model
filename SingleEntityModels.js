@@ -49,10 +49,5 @@ export default class GemSingleModel extends GemSchema{
         
         return `DELETE FROM ${this.schema.table} WHERE ${ this.schema.fields[0].name} = $1`
     }
-    
- 
   
 }
-
-
-        // return (`${this.schema.alias}.${field}`)

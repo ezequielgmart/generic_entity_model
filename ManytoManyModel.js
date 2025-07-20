@@ -27,7 +27,7 @@ export default class GemManytoManyModel extends GemSchema{
                 {key_with_alias} (book.book_id / author.author_id) = $1;
 
     */
-       select_join_query_by_entity_id(key_with_alias){
+    select_join_query_by_entity_id(key_with_alias){
         // fk_model_1 is BookModel, fk_model_2 is AuthorModel
         // We want to select authors and books, filtered by author ID.
 
@@ -43,9 +43,6 @@ export default class GemManytoManyModel extends GemSchema{
         const fk_model_2_table = this.fk_model_2.get_table(); // "authors"
         const fk_model_2_alias = this.fk_model_2.get_alias(); // "author"
         
-        const fk_model_1_mk_with_alias = this.fk_model_1.get_mk_with_alias(); // "author.author_id"
-        // const fk_model_2_mk_with_alias = this.fk_model_2.get_mk_with_alias(); // "book.book_id"
-
         const many_to_many_table = this.get_table(); // "book_authors"
         const many_to_many_alias = this.get_alias(); // "book_author"
 
@@ -65,5 +62,43 @@ export default class GemManytoManyModel extends GemSchema{
         return queryString;
     }
 
+    /* insertQuery */
+    insertQuery(){
+        
+        const queryParamsQtyToString = this.get_queryParams_for_insert_toString()
+        const fieldsString = this.get_all_fields_toString()
+        const queryString = `INSERT INTO ${this.get_table()} ` + 
+                            `(${fieldsString}) ` +
+                            `VALUES (${queryParamsQtyToString}) ` +
+                            `RETURNING ${fieldsString}`
+
+        return queryString;
+    }
+
+    /* updateQuery */
+    updateQuery(){
+
+        const allFieldstoString = this.get_all_fields_toString()
+        const fieldsString = this.get_queryParams_for_update_toString()
+        
+        const queryString = `UPDATE ${this.get_table()} `+
+                            `SET ${fieldsString} `+ 
+                            `WHERE ${this.get_main_key()} = $1 `+
+                            `RETURNING ${allFieldstoString} `
+        
+         return queryString;
+
+    }
+    /* deleteQuery */
+    deleteQuery(){
+
+        const fk_model_1_mk = this.fk_model_1.get_main_key()
+        const fk_model_2_mk = this.fk_model_2.get_main_key()
+        
+        const queryString = `DELETE FROM ${this.get_table()} `+
+                            `WHERE ${fk_model_2_mk} = $1`+
+                            `AND ${fk_model_1_mk} = $2;`
+        return queryString
+    }
 
 }
