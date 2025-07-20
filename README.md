@@ -152,7 +152,7 @@ The primary goal of this GEM is to provide a robust, maintainable, and testable 
     ```
 
 ## Single Entity 
-* **description:** Entities for a single table or domain, for example book. 
+Entities for a single table or domain, for example book. 
 
 ### Single Entity Methods
 
@@ -162,4 +162,10 @@ The primary goal of this GEM is to provide a robust, maintainable, and testable 
 * **updateQuery:** return a update SQL query. 
 * **deleteQuery:** return a delete SQL query. 
 
-    
+
+## ManyToMany Entity 
+Entities for a single table or domain, for example book. 
+
+### Single Entity Methods
+
+* **select_join_query_by_entity_id:** return a SELECT JOIN SQL using a key_with_alias. Example: If you have a manyToMany model like Book_authors where you store the book / authors you can pass the book.book_id as the key_with_alias if you want to receive the authors for an specific book, otherwise if you'd like to receive the books that belongs for a particular author you can pass the author.author_id as the key_with_alias.  

@@ -6,23 +6,11 @@ export default class GemManytoManyModel extends GemSchema{
         super()
     }
 
-    /* this  function was made for testing purposes only 
-    
+    /*    
     ===================================
     READ ME! 
     ===================================
-    Problem / Situation: Sometimes you need to get the information from one domain (authors) and the information (books) on other table which belongs to the first domain (authors). On other words, you need to get the book's information for a particular author. 
-
-    This Solution's approach: You'll need a main domain (books), a secondary (authors), and the many-to-many domain itself (book_authors). 
-    
-    Why the books domain is the main one on this case? 
-    
-
-    
-           
-        If this query is used should return something like this: 
-
-        SELECT author.author_id, author.first_name, author.last_name, author.nationality, book.book_id, book.title, book.release_date FROM authors AS author     JOIN book_authors AS book_author ON author.author_id = book_author.author_id JOIN books AS book ON book_author.book_id = book_author.book_id WHERE author.author_id = $1
+    return a SELECT JOIN SQL using a key_with_alias. Example: If you have a manyToMany model like Book_authors where you store the book / authors you can pass the book.book_id as the key_with_alias if you want to receive the authors for an specific book, otherwise if you'd like to receive the books that belongs for a particular author you can pass the author.author_id as the key_with_alias.  
 
       /* example of the query that I'm looking for
             SELECT author.author_id, author.first_name, author.last_name, author.nationality,
@@ -36,7 +24,7 @@ export default class GemManytoManyModel extends GemSchema{
             JOIN
                 books AS book ON book_author.book_id = book_author.book_id
             WHERE
-                book.book_id = $1;
+                {key_with_alias} (book.book_id / author.author_id) = $1;
 
     */
        select_join_query_by_entity_id(key_with_alias){
