@@ -1,8 +1,8 @@
 {
-  "name": "nodejs-restapi-mvp",
+  "name": "gems",
   "version": "1.0.0",
-  "description": "",
-  "main": "./src/server.js",
+  "description": "A foundational Generic Entity Model (GEM) designed to streamline database interactions in Node.js applications using PostgreSQL.",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon ./src/server.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ezequielgmart/nodejs-restapi-mvp.git"
+    "url": "git+https://github.com/ezequielgmart/generic_entity_model.git"
   },
-  "author": "",
+  "author": "Ezequiel Guzman Marti",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ezequielgmart/nodejs-restapi-mvp/issues"
+    "url": "https://github.com/ezequielgmart/generic_entity_model/issues"
   },
-  "homepage": "https://github.com/ezequielgmart/nodejs-restapi-mvp#readme",
+  "homepage": "https://github.com/ezequielgmart/generic_entity_model#readme",
   "devDependencies": {
     "nodemon": "^3.1.10",
     "supertest": "^7.1.1",
