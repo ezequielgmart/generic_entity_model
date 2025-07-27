@@ -22,134 +22,157 @@ The primary goal of this GEM is to provide a robust, maintainable, and testable 
     *[https://github.com/ezequielgmart/generic_entity_model ]*
 
 2. **Use the instance on your repositories files**
-    *(Create a gem.js file on your src/config/ with the following information)*
+    *(create the entity-model on the domain dir example: src/features/authors/entity.js)*
     ```
     /* here we'll have our instance of gem * */
+   import getPool from "../../config/db.js";
+   
+   import { SingleEntityModel } from "../../../gem/gem.js";
 
-        import GenericEntityModel from "../../gem/index.js"
-        import getPool from "./db" // your db config file exporting the getPool function in order to receive the pg object
+   /*
 
-        class Instance extends GenericEntityModel{
-            
-            constructor(){
-                super(getPool)
-            }
-            // static Gem = new GenericEntityModel()
+    SingleEntityModel example of creating a gem instance 
+    for a single relation entity or a table that isn't a many to many one
 
-        }
+   */ 
 
-        // Create and export a single instance of the class
-        const Gem = new Instance();
+    const table = "authors"; // table name
+    const alias = "author"; // table alias in many-to-many relations 
+    const fields = [{
+                name:"author_id",
+                field_type:"varchar",
+                main_key:true
+            },
+            {
+                name:"first_name",
+                field_type:"varchar",
+                main_key:false
+            },
+            {
+                name:"last_name",
+                field_type:"varchar",
+                main_key:false
+            },
+            {
+                name:"nationality",
+                field_type:"varchar",
+                main_key:false
+            }];
 
-        export default Gem;
+
+
+      const AuthorEntity = new SingleEntityModel(getPool, table, alias, fields) // create the entity-model in order to be imported on the repositories 
+      
+      export default AuthorEntity;
     ```
 3. **Implementations & files**
-    *(this an example of a repository using a book as example)*
+    *(this an example of a repository using an author as example)*
     ```
-    import Gem from "../../config/gem.js"; // the prior step 
-    import Book from "../../entities/book.js"; 
-    import BookModel from "./model.js";
-
-    // Below you'll find an example how the entities/book.js and book/model.js should like
-
-    /**
-    * @class BookRepository
-    * @description Book domain CRUD methods
-    */
-    class BookRepository { 
-        /**
+       
+       import AuthorEntity from "./entity"; // importing from src/features/author/entity.js
+      
+      /**
+       * @class AuthorRepository
+       * @description Author domain CRUD methods
+       */
+      
+      /** 
+       * Methods
+       * @method insert
+       * @method getAll
+       * @method getById
+       * @method update
+       * @method delete
+       * 
+       */
+      
+      class AuthorRepository { 
+   
+       /**
         * @method insert
-        * @description Book domain CRUD methods
+        * @description Author create new
         */
-        static model = new BookModel()
-        
-        static async insert(entity){
-
-            const { book_id, title, release_date } = entity;
-            
-            // this should generate the SQL query
-            const queryText = BookRepository.model.insertQuery()
-
-            const queryParams = [book_id, title, release_date];
-
-            const result = await Gem.insert(queryText, queryParams, Book);
-            
-            return result;
-
-        }
-        
-        /**
+       static async insert(objectByparam){
+           const {author_id, first_name, last_name, nationality } = objectByparam
+           const queryValues = [author_id, first_name, last_name, nationality]
+   
+           const result = await AuthorEntity.insert(queryValues);
+           
+           return result;
+   
+       }
+   
+       /**
+        * 
         * @method getAll
-        * @description Author domain CRUD methods
+        * @description Author get all the authors 
         */
-        static async getAll(){
-
-            const queryText = BookRepository.model.selectQuery()
-            const result = await Gem.select(queryText, Book);
-            
-            return result;
-            
-    }
-    ```
-    *(this an example of a entity using a book as example)*
-    ```
-    export default class Book{ 
-        /**
-        * @param {Object} data - Object the book data.
-        * @param {string} data.book_id - ID .
-        * @param {string} data.title - book title.
-        * @param {date} data.release_date - mm/dd/yyyy when was relased for the first time the book.
+       static async getAll(){
+           
+           const result = await AuthorEntity.select();
+           
+           return result;
+       }
+   
+       /**
+        * 
+        * @method getById
+        * @description get a author by id
         */
+   
+       /*selectbyMkId */
+       static async getById(authorId){
+           
+           const queryParams = [authorId]
+           
+           const result = await AuthorEntity.selectbyMkId(queryParams);
+           
+           return result;
+           
+       }
+      
+       /**
+        * 
+        * @method update
+        * @description update Author information on file
+        */
+       static async update(entity){
+         
+           // generate the sql query string based on the model
+           // const queryText = AuthorRepository.model.updateQuery();
+   
+           const { author_id, first_name, last_name, nationality } = entity;  
+           const queryParams = [author_id, first_name, last_name, nationality]
+           const result = await AuthorEntity.update(queryParams);
+           
+           return result;
+           
+       }
+   
+       /**
+        * 
+        * @method delete
+        * @description delete Author
+        */
+       static async delete(authorId){
+           
+           // generate the sql query string based on the model
+           const queryText = AuthorRepository.model.deleteQuery();
+   
+           const queryParams = [authorId]
+           
+           const result = await Gem.delete(queryText, queryParams, Author);
+           
+           return result;
+   
+       }
+   
+   }
 
-
-        constructor({book_id, title, release_date}){
-            
-            if ( !book_id || !title || !release_date ){
-                throw new Error("Book model requires book_id, title, release_date")
-            }
-
-            this.book_id = book_id
-            this.title = title
-            this.release_date = release_date
-        }
-    }
+      export default AuthorRepository;
+    
     ```
-    *(this an example of a entity using a book as example)*
-    ```
-    import GemSingleModel from "../../../gem/SingleEntityModels.js";
-
-    export default class BookModel extends GemSingleModel{ 
-
-        constructor(){
-            super()
-
-            this.schema = {
-                "table":"books",
-                "alias":"book",
-                "fields":[{
-                    name:"book_id",
-                    field_type:"varchar",
-                    main_key:true
-                },
-                {
-                    name:"title",
-                    field_type:"varchar",
-                    main_key:false
-                },
-                {
-                    name:"release_date",
-                    field_type:"varchar",
-                    main_key:false
-                }]}
-            
-        }
-
-        static getModel(){
-            return this();
-        }
-    }
-
-    ```
+   
 
 ## Single Entity 
 Entities for a single table or domain, for example book. 
