@@ -1,4 +1,3 @@
-
 class Schema {   
     constructor(){
         
@@ -177,11 +176,11 @@ export class SingleEntityModel extends SingleModelQueries{
      * @param {Function} getPoolFn - A function that returns the PostgreSQL connection pool instance. Expected to be located on config/db.js in your project
      * @param {Object} configData - with the requiered configuration from the <entities/entityfile.js>
      */
-    constructor(getPoolFn, table, alias, fields) {
+    constructor(getPool, table, alias, fields) {
         super()
         // Store the function to get the pool, rather than the pool instance itself.
         // This defers the actual pool retrieval until a query method is called.
-        this._getPoolFn = getPoolFn;
+        this._getPoolFn = getPool;
 
         // here we must to define the 
         this.schema = {

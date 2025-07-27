@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon ./src/server.js",
+    "test:integration": "vitest tests/integration.test.js",
     "test": "vitest"
   },
   "repository": {
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/ezequielgmart/generic_entity_model#readme",
   "devDependencies": {
+    "crypto": "^1.0.1",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.1",
     "vitest": "^3.2.4"
