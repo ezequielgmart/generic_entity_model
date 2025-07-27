@@ -18,8 +18,10 @@ The primary goal of this GEM is to provide a robust, maintainable, and testable 
 
 ## Getting Started
 
-1. **Download the code in a .zip format**
-    *[https://github.com/ezequielgmart/generic_entity_model ]*
+1. **Install the NPM package**
+     ```
+       npm install generic-entity-models
+    ```
 
 2. **Use the instance on your repositories files**
     *(create the entity-model on the domain dir example: src/features/authors/entity.js)*
