@@ -22,50 +22,71 @@ The primary goal of this GEM is to provide a robust, maintainable, and testable 
      ```
        npm install generic-entity-models
     ```
+2. **Config the db pool**
+   *(create the db.js on: src/config/db.js)*
+      ```
+    // src/config/db.js
+     import pg from 'pg';
+     import dotenv from 'dotenv';
+     
+     // Load environment variables. This should happen regardless of pool initialization.
+     if (process.env.NODE_ENV === 'test') {
+         dotenv.config({ path: './.env.test' });
+     } else {
+         dotenv.config();
+     }
+     
+     const { Pool } = pg;
+     
+     // Declare a variable to hold the pool instance
+     let poolInstance = null;
+     
+     /**
+      * Initializes the PostgreSQL connection pool.
+      * This function should be called explicitly when the pool is needed.
+      * Ensures the pool is a singleton (only one instance is created).
+      */
+     export function initPool() {
+         if (poolInstance) {
+             return poolInstance; // Return existing instance if already initialized
+         }
+     
+         const dbConfig = {
+             user: process.env.NODE_ENV === 'test' ? process.env.TEST_DB_USER : process.env.DB_USER,
+             host: process.env.NODE_ENV === 'test' ? process.env.TEST_DB_HOST : process.env.DB_HOST,
+             database: process.env.NODE_ENV === 'test' ? process.env.TEST_DB_DATABASE : process.env.DB_DATABASE,
+             password: process.env.NODE_ENV === 'test' ? process.env.TEST_DB_PASSWORD : process.env.DB_PASSWORD,
+             port: process.env.NODE_ENV === 'test' ? parseInt(process.env.TEST_DB_PORT, 10) : parseInt(process.env.DB_PORT, 10),
+         };
+     
+         poolInstance = new Pool(dbConfig);
+     
+         // Error handling for the pool connection
+         poolInstance.on('error', (err, client) => {
+             console.error('Unexpected error on PostgreSQL:', err);
+             if (process.env.NODE_ENV !== 'test') { // In production, exit on critical DB error
+                 process.exit(-1);
+             }
+         });
+     
+         return poolInstance;
+     }
+     
+     /**
+      * Gets the current pool instance.
+      * Throws an error if the pool has not been initialized.
+      * This is the default export for convenience in modules that expect a direct 'pool' import.
+      */
+     const getPool = () => {
+         if (!poolInstance) {
+             // This error indicates a programming mistake: pool was used before initPool was called.
+             throw new Error('Database pool has not been initialized. Call initPool() first.');
+         }
+         return poolInstance;
+     };
+     
+     export default getPool; // Export the getter as default
 
-2. **Use the instance on your repositories files**
-    *(create the entity-model on the domain dir example: src/features/authors/entity.js)*
-    ```
-    /* here we'll have our instance of gem * */
-   import getPool from "../../config/db.js";
-   
-   import { SingleEntityModel } from "../../../gem/gem.js";
-
-   /*
-
-    SingleEntityModel example of creating a gem instance 
-    for a single relation entity or a table that isn't a many to many one
-
-   */ 
-
-    const table = "authors"; // table name
-    const alias = "author"; // table alias in many-to-many relations 
-    const fields = [{
-                name:"author_id",
-                field_type:"varchar",
-                main_key:true
-            },
-            {
-                name:"first_name",
-                field_type:"varchar",
-                main_key:false
-            },
-            {
-                name:"last_name",
-                field_type:"varchar",
-                main_key:false
-            },
-            {
-                name:"nationality",
-                field_type:"varchar",
-                main_key:false
-            }];
-
-
-
-      const AuthorEntity = new SingleEntityModel(getPool, table, alias, fields) // create the entity-model in order to be imported on the repositories 
-      
-      export default AuthorEntity;
     ```
 3. **Implementations & files**
     *(this an example of a repository using an author as example)*
