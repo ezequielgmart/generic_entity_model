@@ -212,6 +212,12 @@ Entities for a single table or domain, for example book.
 ## ManyToMany Entity 
 Entities for a single table or domain, for example book. 
 
+
 ### Single Entity Methods
 
-* **select_join_query_by_entity_id:** return a SELECT JOIN SQL using a key_with_alias. Example: If you have a manyToMany model like Book_authors where you store the book / authors you can pass the book.book_id as the key_with_alias if you want to receive the authors for an specific book, otherwise if you'd like to receive the books that belongs for a particular author you can pass the author.author_id as the key_with_alias.  
+* **select_join_query_by_entity_id:** return a SELECT JOIN SQL using a key_with_alias. Example: If you have a manyToMany model like Book_authors where you store the book / authors you can pass the book.book_id as the key_with_alias if you want to receive the authors for an specific book, otherwise if you'd like to receive the books that belongs for a particular author you can pass the author.author_id as the key_with_alias.
+
+
+### Example
+
+* On this directory you guys will be able to find an implementation using the "author" as example. Here you'll be able to see how the db.js config file should like, also the repository file and the entity. 
