@@ -6,15 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon ./src/server.js",
-    "test": "vitest",
-    "test:integration-rep": "vitest tests/integration/repository.test.js",
-    "test:model": "vitest tests/integration/model.test.js",
-    "test:user-repository": "vitest tests/users/repository.test.js",
-    "test:user-service": "vitest tests/users/services.test.js",
-    "test:validations": "vitest tests/utils/validations.test.js",
-    "test:auth-repository": "vitest tests/auth/repository.test.js",
-    "test:auth-service": "vitest tests/auth/services.test.js",
-    "test:author-repository": "vitest tests/author/repository.test.js"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -30,5 +22,9 @@
     "nodemon": "^3.1.10",
     "supertest": "^7.1.1",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "pg": "^8.16.3"
   }
 }
