@@ -1,5 +1,5 @@
 {
-  "name": "gems",
+  "name": "generic-entity-models",
   "version": "1.0.0",
   "description": "A foundational Generic Entity Model (GEM) designed to streamline database interactions in Node.js applications using PostgreSQL.",
   "main": "index.js",
